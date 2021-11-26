@@ -7,7 +7,7 @@
 var temperature_hotend=245    ; Указать температуру HotEnd`а, C
 var temperature_hotbed=110    ; Указать температуру стола, C
 
-var tower_width=20            ; Указать ширину параллелепипеда, мм
+var tower_width=30            ; Указать ширину параллелепипеда, мм
 var tower_height=10           ; Указать высоту параллелепипеда, мм
 var start_X=80                ; Указать координату X центра, мм
 var start_Y=80                ; Указать координату Y центра, мм
@@ -22,7 +22,7 @@ var extrusion_multiplier=1.05 ; Указать коэффициент экстр
 
 var babystepping=0.00         ; Указать BabyStepping (минус уменьшает зазор), мм
 var z_lift=0.0                ; Указать высоту для холостых перемещений, мм
-var z_end=50                  ; Указать смещение Z по завершению теста, мм
+var z_end=150                 ; Указать смещение Z по завершению теста, мм
 
 var print_speed=30            ; Указать скорость печати, мм/сек
 var travel_speed=150          ; Указать скорость холостых перемещений, мм/сек
@@ -100,7 +100,8 @@ while var.layers_count <= var.layers_number                             ; Вып
    G1 X{var.start_X-var.print_length/2} Y{var.start_Y-var.print_length/2} F{var.travel_speed*60} ; Перемещение на позицию начала печати
    G1 Z{var.line_height*var.layers_count}                               ; Перемещение Z на высоту текущего слоя
 
-   while var.print_length > 8*var.line_width                            ; Ограничение печати внутреннего заполнения
+   ;while var.print_length > 10*var.line_width                            ; Ограничение печати внутреннего заполнения
+   while var.print_length >= var.tower_width
       set var.filament_length=(var.line_width*var.line_height*var.print_length)/(pi*var.filament_diameter*var.filament_diameter/4)*var.extrusion_multiplier
       G91
       G1 X{var.print_length} E{var.filament_length} F{var.print_speed*60}      ; Печать линии X+
