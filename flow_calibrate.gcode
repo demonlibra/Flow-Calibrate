@@ -5,7 +5,7 @@
 ;-----------------------------------------------------------------------
 
 var temperature_hotend=220    ; Указать температуру HotEnd`а, C
-var temperature_hotbed=80    ; Указать температуру стола, C
+var temperature_hotbed=80     ; Указать температуру стола, C
 
 var tower_width=30            ; Указать ширину параллелепипеда, мм
 var tower_height=10           ; Указать высоту параллелепипеда, мм
@@ -92,15 +92,16 @@ while var.layers_count <= var.layers_number                             ; Вып
       M106 S{var.model_fan_speed}                                       ; Включить обдув на указанном слое
 
    if var.layers_count==1
-      set var.print_length=var.tower_width+var.brim_width*2             ; Если печать 1-го слоя, то учитывать кайму
+      set var.print_length=var.tower_width-var.line_width+var.brim_width*2             ; Если печать 1-го слоя, то учитывать кайму
    else
-      set var.print_length=var.tower_width                              ; Если печать НЕ 1-го слоя, то НЕ учитывать кайму
+      set var.print_length=var.tower_width-var.line_width               ; Если печать НЕ 1-го слоя, то НЕ учитывать кайму
       
    G90                                                                  ; Выбор абсолютных перемещений
    G1 X{var.start_X-var.print_length/2} Y{var.start_Y-var.print_length/2} F{var.travel_speed*60} ; Перемещение на позицию начала печати
    G1 Z{var.line_height*var.layers_count}                               ; Перемещение Z на высоту текущего слоя
 
-   while var.print_length >= var.tower_width-var.tower_perimeters*var.line_width ; Ограничение печати периметров
+   while var.print_length > var.tower_width-(var.tower_perimeters*var.line_width*2) ; Ограничение печати периметров
+
       set var.filament_length=(var.line_width*var.line_height*var.print_length)/(pi*var.filament_diameter*var.filament_diameter/4)*var.extrusion_multiplier
       G91
       G1 X{var.print_length} E{var.filament_length} F{var.print_speed*60}      ; Печать линии X+
