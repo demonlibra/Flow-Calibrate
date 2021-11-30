@@ -4,14 +4,14 @@
 ;============================== Параметры ==============================
 ;-----------------------------------------------------------------------
 
-var temperature_hotend=245    ; Указать температуру HotEnd`а, C
-var temperature_hotbed=110    ; Указать температуру стола, C
+var temperature_hotend=220    ; Указать температуру HotEnd`а, C
+var temperature_hotbed=80    ; Указать температуру стола, C
 
 var tower_width=30            ; Указать ширину параллелепипеда, мм
 var tower_height=10           ; Указать высоту параллелепипеда, мм
 var start_X=80                ; Указать координату X центра, мм
 var start_Y=80                ; Указать координату Y центра, мм
-var tower_perimeters=1        ; Указать количество периметров параллелепипеда
+var tower_perimeters=2        ; Указать количество периметров параллелепипеда
 var skirt_offset=5            ; Указать расстояние до юбки (для прочистки сопла), мм
 var brim_number=10            ; Указать количество линий каймы
 
@@ -24,7 +24,7 @@ var babystepping=0.00         ; Указать BabyStepping (минус умен
 var z_lift=0.0                ; Указать высоту для холостых перемещений, мм
 var z_end=150                 ; Указать смещение Z по завершению теста, мм
 
-var print_speed=30            ; Указать скорость печати, мм/сек
+var print_speed=20            ; Указать скорость печати, мм/сек
 var travel_speed=150          ; Указать скорость холостых перемещений, мм/сек
 
 var pa=0.025                  ; Указать коэффициент Pressure Advance
@@ -100,8 +100,7 @@ while var.layers_count <= var.layers_number                             ; Вып
    G1 X{var.start_X-var.print_length/2} Y{var.start_Y-var.print_length/2} F{var.travel_speed*60} ; Перемещение на позицию начала печати
    G1 Z{var.line_height*var.layers_count}                               ; Перемещение Z на высоту текущего слоя
 
-   ;while var.print_length > 10*var.line_width                            ; Ограничение печати внутреннего заполнения
-   while var.print_length >= var.tower_width
+   while var.print_length >= var.tower_width-var.tower_perimeters*var.line_width ; Ограничение печати периметров
       set var.filament_length=(var.line_width*var.line_height*var.print_length)/(pi*var.filament_diameter*var.filament_diameter/4)*var.extrusion_multiplier
       G91
       G1 X{var.print_length} E{var.filament_length} F{var.print_speed*60}      ; Печать линии X+
@@ -110,12 +109,7 @@ while var.layers_count <= var.layers_number                             ; Вып
       G1 Y{-var.print_length} E{var.filament_length} F{var.print_speed*60}     ; Печать линии Y-
 
       set var.print_length=var.print_length-var.line_width*2            ; Длина следующего периметра
-      ; Если это НЕ 1-й слой, напечатать заданное число периметров башни
-      if (var.layers_count!=1) & (var.print_length<(var.tower_width-var.tower_perimeters*var.line_width))
-         break
-
       G1 X{var.line_width} Y{var.line_width}                            ; Переход к следующему периметру
-
 
    G91 G1 Z{var.z_lift} F{var.travel_speed*60}                          ; Опустить стол перед холостым перемещением
 
