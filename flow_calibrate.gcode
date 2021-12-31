@@ -7,13 +7,13 @@
 var temperature_hotend=220    ; Указать температуру HotEnd`а, C
 var temperature_hotbed=80     ; Указать температуру стола, C
 
-var tower_width=30            ; Указать ширину параллелепипеда, мм
-var tower_height=10           ; Указать высоту параллелепипеда, мм
+var tower_width=25            ; Указать ширину параллелепипеда, мм
+var tower_height=5            ; Указать высоту параллелепипеда, мм
 var start_X=80                ; Указать координату X центра, мм
 var start_Y=80                ; Указать координату Y центра, мм
 var tower_perimeters=2        ; Указать количество периметров параллелепипеда
 var skirt_offset=5            ; Указать расстояние до юбки (для прочистки сопла), мм
-var brim_number=10            ; Указать количество линий каймы
+var brim_number=5             ; Указать количество линий каймы
 
 var line_width=0.4            ; Указать ширину линий, мм
 var line_height=0.2           ; Указать толщину линий, мм
@@ -84,7 +84,7 @@ var print_length=0                                                      ; Соз
 var filament_length=0                                                   ; Создание переменной - длина филамента при печати одной стороны
 var layers_count=1                                                      ; Создание переменной - счётчик слоёв
 var layers_number=floor(var.tower_height/var.line_height)               ; Общее колиство слоёв
-echo "Всего будет напечатано "^var.layers_number^" слоёв."
+echo "Всего будет напечатано "^var.layers_number^" слоёв"
 
 while var.layers_count <= var.layers_number                             ; Выполнять цикл до достижения общего количества слоёв
 
@@ -113,7 +113,7 @@ while var.layers_count <= var.layers_number                             ; Вып
       G1 X{var.line_width} Y{var.line_width}                            ; Переход к следующему периметру
 
    G91 G1 Z{var.z_lift} F{var.travel_speed*60}                          ; Опустить стол перед холостым перемещением
-
+   echo "Напечатано "^var.layers_count^" слоёв из "^var.layers_number
    set var.layers_count=var.layers_count+1                              ; Номер следующего слоя
 
 
